@@ -99,7 +99,7 @@ public class MainPanel extends JPanel {
 			}
 		}
 		
-		int c = 0;
+		/*int c = 0;
 		String padding = "0";
 		while (c < _r * 10) {
 			String l = new String("0");
@@ -107,8 +107,10 @@ public class MainPanel extends JPanel {
 			c++;
 		}
 		toReturn = padding + toReturn;
-	
+			
 		return Boolean.parseBoolean(toReturn.substring(padding.length()));
+		*/
+		return Boolean.parseBoolean(toReturn);
 	}
 
 	public void displayIteration(boolean[][] nextIter) {
