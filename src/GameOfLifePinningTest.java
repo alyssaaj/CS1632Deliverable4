@@ -5,6 +5,11 @@ import org.mockito.Mockito;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import org.junit.Test;
+import org.mockito.*;
+import static org.mockito.Mockito.*;
+import java.lang.reflect.Method;
+
 public class GameOfLifePinningTest {
 	/*
 	 * READ ME: You may need to write pinning tests for methods from multiple
@@ -33,6 +38,9 @@ public class GameOfLifePinningTest {
 	 */
 
 	/* TODO: Declare all variables required for the test fixture. */
+	MainPanel mp;
+	@Mock
+	Cell c;
 
 	@Before
 	public void setUp() {
@@ -44,8 +52,59 @@ public class GameOfLifePinningTest {
 		 * https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life#/media/File:Game_of_life_blinker.gif
 		 * Start from the vertical bar on a 5X5 matrix as shown in the GIF.
 		 */
+		int sizeMP = 5;
+		mp = new MainPanel(sizeMP); 
+		c = Mockito.mock(Cell.class);
+		ArrayList<String> blinker = new ArrayList<String>();
+		for (int i = 0; i < sizeMP; i++){
+			String cellpattern = "";
+			for (int j = 0; j < sizeMP; j++){
+				if(i == 2 && (j == 1 || j == 2 || j== 3)){
+					cellpattern +="X";
+				}
+				else{
+					cellpattern += ".";
+				}
+			}
+			blinker.add(cellpattern);
+		}
+
+		mp.load(blinker);
+
+	}
+
+	@After
+	public void tearDown() {
+		mp = null;
+		c = null;
 	}
 
 	/* TODO: Write the three pinning unit tests for the three optimized methods */
+	@Test
+	public void testIterateCellReturnFalse(){
+		mp.run();
+		mp.stop();
+
+		assertEquals("false", mp.iterateCell(0,0));
+	}
+	
+	@Test
+	public void testIterateCellReturnTrue(){
+		mp.run();
+		mp.stop();
+
+		assertEquals("true", mp.iterateCell(2,2));
+	}
+
+	@Test
+	public void testCalculateNextIteration(){
+		
+	}
+
+	@Test
+	public void test3(){
+		
+	}
+
 
 }
