@@ -108,23 +108,33 @@ public class GameOfLifePinningTest {
 	@After
 	public void tearDown() {
 		mp = null;
+		cell_X = null;
+		cell_dot = null;
 		c_dead = null;
 		blinker = null;
+		patternCell1 = null;
+		patternCell2 = null;
+		patternCell3 = null;
+		patternCell4 = null;
+		patternCell5 = null;
 	}
 
 	/* TODO: Write the three pinning unit tests for the three optimized methods */
 	@Test
 	public void testIterateCellReturnFalse(){
+		// check that an alive cell becomes dead
 		assertFalse("testIterateCellReturnFalse failed!", mp.iterateCell(2,3));
 	}
 
 	@Test
 	public void testIterateCellReturnTrue(){
+		// check that a dead cell becomes alive
 		assertTrue("testIterateCellReturnTrue failed!",mp.iterateCell(3,2));
 	}
 
 	@Test
 	public void testIterateCellMiddle(){
+		// check that the middle alive cell stays alive
 		assertTrue("testIterateCellMiddlefailed!",mp.iterateCell(2,2));
 	}
 
@@ -158,11 +168,13 @@ public class GameOfLifePinningTest {
 
 	@Test
 	public void testBackUpToStringAlive(){
+		// test that an alive cell produces an X when toString is called
 		assertEquals("X", cell_X.toString());
 	}
 
 	@Test
 	public void testBackUpToStringDead(){
+		// test that a dead cell produces a . when toString is called
 		assertEquals(".", cell_dot.toString());	
 	}
 
