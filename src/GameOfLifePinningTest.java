@@ -10,6 +10,8 @@ import org.mockito.*;
 import static org.mockito.Mockito.*;
 import java.lang.reflect.Method;
 
+import java.util.*;
+
 public class GameOfLifePinningTest {
 	/*
 	 * READ ME: You may need to write pinning tests for methods from multiple
@@ -39,8 +41,17 @@ public class GameOfLifePinningTest {
 
 	/* TODO: Declare all variables required for the test fixture. */
 	MainPanel mp;
+
 	@Mock
-	Cell c;
+	Cell c_dead;
+
+	@Mock
+	Cell[][] blinker;
+
+	int sizeMP = 5;
+
+	@Mock
+	Cell patternCell1, patternCell2, patternCell3, patternCell4, patternCell5;
 
 	@Before
 	public void setUp() {
@@ -52,57 +63,118 @@ public class GameOfLifePinningTest {
 		 * https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life#/media/File:Game_of_life_blinker.gif
 		 * Start from the vertical bar on a 5X5 matrix as shown in the GIF.
 		 */
-		int sizeMP = 5;
+
+		// create objects and mocks
 		mp = new MainPanel(sizeMP); 
-		c = Mockito.mock(Cell.class);
-		ArrayList<String> blinker = new ArrayList<String>();
-		for (int i = 0; i < sizeMP; i++){
-			String cellpattern = "";
-			for (int j = 0; j < sizeMP; j++){
-				if(i == 2 && (j == 1 || j == 2 || j== 3)){
-					cellpattern +="X";
-				}
-				else{
-					cellpattern += ".";
-				}
+		c_dead = Mockito.mock(Cell.class);
+		blinker = new Cell[sizeMP][sizeMP];
+
+		patternCell1 = Mockito.mock(Cell.class);
+		patternCell2 = Mockito.mock(Cell.class);
+		patternCell3 = Mockito.mock(Cell.class);
+		patternCell4 = Mockito.mock(Cell.class);
+		patternCell5 = Mockito.mock(Cell.class);
+
+
+		// Iterate through the cell array filling with dead cells to start
+		for (int j = 0; j < sizeMP; j++){
+			for (int k = 0; k < sizeMP; k++){
+				blinker[j][k] = c_dead;
 			}
-			blinker.add(cellpattern);
 		}
 
-		mp.load(blinker);
+		// assign behavior and create blinker pattern
+		Mockito.when(c_dead.getAlive()).thenReturn(false);
+		blinker[2][1] = patternCell1;
+		Mockito.when(blinker[2][1].getAlive()).thenReturn(true);
+		blinker[1][2] = patternCell2;
+		Mockito.when(blinker[1][2].getAlive()).thenReturn(false);
+		blinker[2][2] = patternCell3;
+		Mockito.when(blinker[2][2].getAlive()).thenReturn(true);
+		blinker[3][2] = patternCell4;
+		Mockito.when(blinker[3][2].getAlive()).thenReturn(false);
+		blinker[2][3] = patternCell5;
+		Mockito.when(blinker[2][3].getAlive()).thenReturn(true);
+
+		// set the blinker pattern
+		mp.setCells(blinker);
 
 	}
 
 	@After
 	public void tearDown() {
 		mp = null;
-		c = null;
+		c_dead = null;
+		blinker = null;
 	}
 
 	/* TODO: Write the three pinning unit tests for the three optimized methods */
 	@Test
 	public void testIterateCellReturnFalse(){
-		mp.run();
-		mp.stop();
-
-		assertEquals("false", mp.iterateCell(0,0));
+		assertFalse("testIterateCellReturnFalse failed!", mp.iterateCell(2,3));
 	}
-	
+
 	@Test
 	public void testIterateCellReturnTrue(){
-		mp.run();
-		mp.stop();
-
-		assertEquals("true", mp.iterateCell(2,2));
+		assertTrue("testIterateCellReturnTrue failed!",mp.iterateCell(3,2));
 	}
 
+	@Test
+	public void testIterateCellMiddle(){
+		assertTrue("testIterateCellMiddlefailed!",mp.iterateCell(2,2));
+	}
+
+	
 	@Test
 	public void testCalculateNextIteration(){
-		
+		mp.calculateNextIteration();	// horizontal bar created
+		int num_c_dead = 0;
+
+		for (int j = 0; j < sizeMP; j++){
+			for (int k = 0; k < sizeMP; k++){
+				// check that the horizontal blinker cells are true
+				if(k == 2 && (j == 1 || j == 2 || j == 3)){
+					Mockito.verify(blinker[j][k], Mockito.times(1)).setAlive(true);
+				}
+				// check that the top and bottom vertical blinker cells are false
+				else if (j == 2 && (k == 1 || k == 3)) {
+					Mockito.verify(blinker[j][k], Mockito.times(1)).setAlive(false);
+				}
+				else{
+					num_c_dead++;
+				}
+			}
+		}
+		// Verifies that none of the cells outside of the horizontal and vertical blinker pattern cells are changed/affected
+		Mockito.verify(c_dead, Mockito.times(num_c_dead)).setAlive(false);
+
 	}
 
+
+
 	@Test
-	public void test3(){
+	public void testBackUpToString(){
+		/*ArrayList<String> blinker_string = new ArrayList<String>();
+
+		for (int j = 0; j < sizeMP; j++){
+			String row_pattern = "";
+			for (int k = 0; k < sizeMP; k++){
+				if (j == 2 && (k == 1 || k == 2 || k == 3)){
+					row_pattern += "X";
+				}
+				else{
+					row_pattern += ".";
+				}
+
+			}
+			blinker_string.add(row_pattern);
+		}
+
+		assertEquals(blinker_string.toString(), );*/
+
+		assertEquals("X", patternCell1.toString());
+		assertEquals(".", patternCell2.toString());
+
 		
 	}
 
