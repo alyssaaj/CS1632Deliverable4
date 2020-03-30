@@ -42,6 +42,8 @@ public class GameOfLifePinningTest {
 	/* TODO: Declare all variables required for the test fixture. */
 	MainPanel mp;
 
+	Cell cell_X, cell_dot;
+
 	@Mock
 	Cell c_dead;
 
@@ -68,6 +70,8 @@ public class GameOfLifePinningTest {
 		mp = new MainPanel(sizeMP); 
 		c_dead = Mockito.mock(Cell.class);
 		blinker = new Cell[sizeMP][sizeMP];
+		cell_X = new Cell(true);
+		cell_dot = new Cell(false);
 
 		patternCell1 = Mockito.mock(Cell.class);
 		patternCell2 = Mockito.mock(Cell.class);
@@ -153,29 +157,13 @@ public class GameOfLifePinningTest {
 
 
 	@Test
-	public void testBackUpToString(){
-		/*ArrayList<String> blinker_string = new ArrayList<String>();
+	public void testBackUpToStringAlive(){
+		assertEquals("X", cell_X.toString());
+	}
 
-		for (int j = 0; j < sizeMP; j++){
-			String row_pattern = "";
-			for (int k = 0; k < sizeMP; k++){
-				if (j == 2 && (k == 1 || k == 2 || k == 3)){
-					row_pattern += "X";
-				}
-				else{
-					row_pattern += ".";
-				}
-
-			}
-			blinker_string.add(row_pattern);
-		}
-
-		assertEquals(blinker_string.toString(), );*/
-
-		assertEquals("X", patternCell1.toString());
-		assertEquals(".", patternCell2.toString());
-
-		
+	@Test
+	public void testBackUpToStringDead(){
+		assertEquals(".", cell_dot.toString());	
 	}
 
 
